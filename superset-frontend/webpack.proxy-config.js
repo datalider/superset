@@ -17,7 +17,15 @@
  * under the License.
  */
 const zlib = require('zlib');
-const { ZSTDDecompress } = require('simple-zstd');
+
+// Conditional import for zstd - fallback for Windows compatibility
+let ZSTDDecompress;
+try {
+  ZSTDDecompress = require('simple-zstd').ZSTDDecompress;
+} catch (error) {
+  console.warn('Warning: simple-zstd not available, zstd compression will not be supported');
+  ZSTDDecompress = null;
+}
 
 const yargs = require('yargs');
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -128,7 +136,7 @@ function processHTML(proxyResponse, response) {
     uncompress = zlib.createBrotliDecompress();
   } else if (responseEncoding === 'deflate') {
     uncompress = zlib.createInflate();
-  } else if (responseEncoding === 'zstd') {
+  } else if (responseEncoding === 'zstd' && ZSTDDecompress) {
     uncompress = ZSTDDecompress();
   }
   if (uncompress) {
