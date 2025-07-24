@@ -18,15 +18,6 @@
  */
 const zlib = require('zlib');
 
-// Conditional import for zstd - fallback for Windows compatibility
-let ZSTDDecompress;
-try {
-  ZSTDDecompress = require('simple-zstd').ZSTDDecompress;
-} catch (error) {
-  console.warn('Warning: simple-zstd not available, zstd compression will not be supported');
-  ZSTDDecompress = null;
-}
-
 const yargs = require('yargs');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const parsedArgs = yargs.argv;
